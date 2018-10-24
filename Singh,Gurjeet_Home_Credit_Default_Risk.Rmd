@@ -1,0 +1,30 @@
+---
+title: "Home Credit Default Risk"
+author: "Singh, Gurjeet"
+date: "October 23, 2018"
+output: ↨
+      ioslides_presentation:
+          widescreen: true
+          fig_width: 10
+          fig_height: 5
+          fig_caption: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+
+```
+
+
+```{r 0_load_library, echo=FALSE}
+##-------------------
+# Load Libraries
+##-------------------
+options(knitr.kable.NA = '')
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+options(scipen = 999)
+```
+
+
