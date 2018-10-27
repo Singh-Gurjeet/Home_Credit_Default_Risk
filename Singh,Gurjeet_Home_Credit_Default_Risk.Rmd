@@ -50,7 +50,7 @@ options(scipen = 999)
 ```
 
 ```{r}
-save.image(file = "work_space_20181026_PM_09_40.RData")
+save.image(file = "work_space_20181027_AM_10_53.RData")
 
 load("work_space_20181026_PM_09_40.RData")
 
@@ -60,6 +60,35 @@ load("work_space_20181026_PM_09_40.RData")
 ```{r}
 train_df
 ```
+
+
+```{r}
+##------------------------------------------
+#  Selected variables per domain knowledge
+##------------------------------------------
+Grp_app_train_df <- train_df %>% 
+                          select (SK_ID_CURR, TARGET, NAME_CONTRACT_TYPE, CODE_GENDER, FLAG_OWN_CAR, FLAG_OWN_REALTY,
+                                  CNT_CHILDREN, AMT_INCOME_TOTAL, AMT_CREDIT, AMT_ANNUITY, AMT_GOODS_PRICE, NAME_INCOME_TYPE,
+                                  NAME_EDUCATION_TYPE, NAME_FAMILY_STATUS, NAME_HOUSING_TYPE, REGION_POPULATION_RELATIVE, DAYS_BIRTH,
+                                  DAYS_EMPLOYED,
+                                  DAYS_REGISTRATION, REG_REGION_NOT_LIVE_REGION, REG_REGION_NOT_WORK_REGION, REG_CITY_NOT_LIVE_CITY,
+                                  REG_CITY_NOT_WORK_CITY,
+                                  LIVE_CITY_NOT_WORK_CITY, FLAG_DOCUMENT_2, FLAG_DOCUMENT_3, FLAG_DOCUMENT_4, FLAG_DOCUMENT_5,
+                                  FLAG_DOCUMENT_6, 
+                                  FLAG_DOCUMENT_7, FLAG_DOCUMENT_8, FLAG_DOCUMENT_9, FLAG_DOCUMENT_10, FLAG_DOCUMENT_11,
+                                  FLAG_DOCUMENT_12,
+                                  FLAG_DOCUMENT_13, FLAG_DOCUMENT_14, FLAG_DOCUMENT_15, FLAG_DOCUMENT_16, FLAG_DOCUMENT_17,
+                                  FLAG_DOCUMENT_18, 
+                                  FLAG_DOCUMENT_19, FLAG_DOCUMENT_20, FLAG_DOCUMENT_21)
+```
+
+
+
+```{r}
+Grp_app_train_df
+```
+
+
 
 ```{r}
 ##------------------------------------------
@@ -76,31 +105,91 @@ Grp_bureau_df <-  train_bureau_df %>%
 ```
 
 
-
 ```{r}
-train_bureau_bal_df
+train_Cred_Crd_bal_df %>% 
+  arrange(SK_ID_CURR)
 ```
 
-
 ```{r}
-train_Cred_Crd_bal_df
+##------------------------------------------
+# Filter and Condense the Credit card Balance by grouping
+##------------------------------------------ 
+Grp_Cred_crd_bal_df <- train_Cred_Crd_bal_df %>% 
+                          filter(NAME_CONTRACT_STATUS == c("Active")) %>% 
+                          mutate(IMP_AMT_BALANCE = replace_na(AMT_BALANCE,0)) %>% 
+                          mutate(IMP_AMT_CREDIT_LIMIT_ACTUAL = replace_na(AMT_CREDIT_LIMIT_ACTUAL,0)) %>% 
+                          mutate(IMP_AMT_DRAWINGS_ATM_CURRENT = replace_na(AMT_DRAWINGS_ATM_CURRENT,0)) %>% 
+                          mutate(IMP_AMT_DRAWINGS_CURRENT = replace_na(AMT_DRAWINGS_CURRENT,0)) %>% 
+                          mutate(IMP_AMT_DRAWINGS_OTHER_CURRENT = replace_na(AMT_DRAWINGS_OTHER_CURRENT,0)) %>% 
+                          mutate(IMP_AMT_DRAWINGS_POS_CURRENT = replace_na(AMT_DRAWINGS_POS_CURRENT,0)) %>% 
+                          mutate(IMP_SK_DPD = replace_na(SK_DPD,0)) %>% 
+                          mutate(IMP_SK_DPD_DEF = replace_na(SK_DPD_DEF,0)) %>% 
+                                           group_by(SK_ID_CURR) %>% 
+                                          summarize(Total_IMP_AMT_BALANCE = sum(IMP_AMT_BALANCE),
+                                                    Total_IMP_AMT_CREDIT_LIMIT_ACTUAL = sum(IMP_AMT_CREDIT_LIMIT_ACTUAL),
+                                                    Total_IMP_AMT_DRAWINGS_ATM_CURRENT = sum(IMP_AMT_DRAWINGS_ATM_CURRENT),
+                                                    Total_IMP_AMT_DRAWINGS_CURRENT = sum(IMP_AMT_DRAWINGS_CURRENT),
+                                                    Total_IMP_AMT_DRAWINGS_OTHER_CURRENT = sum(IMP_AMT_DRAWINGS_OTHER_CURRENT),
+                                                    Total_IMP_AMT_DRAWINGS_POS_CURRENT = sum(IMP_AMT_DRAWINGS_POS_CURRENT),
+                                                    Total_IMP_SK_DPD = sum(IMP_SK_DPD),
+                                                    Total_IMP_SK_DPD_DEF = sum(IMP_SK_DPD_DEF),
+                                                    Total_prev_months = n())
 ```
+
 
 
 ```{r}
 train_inst_pmts_df
 ```
 
+```{r}
+train_inst_pmts_df %>% 
+  arrange(SK_ID_CURR,SK_ID_PREV )
+```
 
+
+
+
+```{r}
+##------------------------------------------
+# Filter and Condense the POS Cash Balance by grouping
+##------------------------------------------
+
+Grp_POS_Cash_bal_df <- train_POS_Cash_bal_df %>% 
+                        filter(NAME_CONTRACT_STATUS == c("Active")) %>% 
+                        group_by(SK_ID_CURR) %>% 
+                        summarize(Total_SK_DPD = sum(SK_DPD),
+                                    Total_SK_DPD_DEF = sum(SK_DPD_DEF),
+                                    Total_prev_months = n())
+
+```
+
+
+```{r}
+##------------------------------------------
+# NOT helpful to include in the final population
+##------------------------------------------
+train_prev_appl_df %>% 
+  arrange(SK_ID_CURR)
+```
+
+
+```{r}
+##------------------------------------------
+# NOT helpful to include in the final population - DO NOT USE
+##------------------------------------------
+
+train_bureau_bal_df
+```
+
+
+Other work
 ```{r}
 train_POS_Cash_bal_df
 #View(train_POS_Cash_bal_df)
 ```
 
 
-```{r}
-summary(train_POS_Cash_bal_df)
-```
 
 ```{r}
 str(train_POS_Cash_bal_df)
@@ -122,35 +211,3 @@ train_POS_Cash_bal_df %>%
     filter(NAME_CONTRACT_STATUS == c("Active") & SK_ID_CURR == c(100003)) %>% 
   arrange(SK_ID_CURR)
 ```
-
-
-```{r}
-##------------------------------------------
-# Filter and Condense the POS Cash Balance by grouping
-##------------------------------------------
-
-Grp_POS_Cash_bal_df <- train_POS_Cash_bal_df %>% 
-                        filter(NAME_CONTRACT_STATUS == c("Active")) %>% 
-                        group_by(SK_ID_CURR) %>% 
-                        summarize(Total_SK_DPD = sum(SK_DPD),
-                                    Total_SK_DPD_DEF = sum(SK_DPD_DEF),
-                                    Total_prev_months = n())
-
-```
-
-
-
-```{r}
-train_prev_appl_df
-```
-
-
-```{r}
-summary(train_df)
-```
-
-```{r}
-Sys.Date()
-Sys.time()
-```
-
