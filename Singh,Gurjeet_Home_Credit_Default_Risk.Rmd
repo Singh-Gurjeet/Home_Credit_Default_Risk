@@ -27,4 +27,10 @@ library(lubridate)
 options(scipen = 999)
 ```
 
+```{r}
+##-----------
+# Load data
+##----------------
+```
+
 
