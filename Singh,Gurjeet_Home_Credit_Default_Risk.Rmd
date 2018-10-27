@@ -51,7 +51,9 @@ options(scipen = 999)
 
 ```{r}
 save.image(file = "work_space_20181026_PM_09_40.RData")
-##load("work_space_20181026_PM_04_00.RData")
+
+load("work_space_20181026_PM_09_40.RData")
+
 ```
 
 
