@@ -72,7 +72,8 @@ Grp_app_train_df <- train_df %>%
                                   DAYS_EMPLOYED,
                                   DAYS_REGISTRATION, REG_REGION_NOT_LIVE_REGION, REG_REGION_NOT_WORK_REGION, REG_CITY_NOT_LIVE_CITY,
                                   REG_CITY_NOT_WORK_CITY,
-                                  LIVE_CITY_NOT_WORK_CITY, FLAG_DOCUMENT_2, FLAG_DOCUMENT_3, FLAG_DOCUMENT_4, FLAG_DOCUMENT_5,
+                                  LIVE_CITY_NOT_WORK_CITY, EXT_SOURCE_1, EXT_SOURCE_1, EXT_SOURCE_3,
+                                  FLAG_DOCUMENT_2, FLAG_DOCUMENT_3, FLAG_DOCUMENT_4, FLAG_DOCUMENT_5,
                                   FLAG_DOCUMENT_6, 
                                   FLAG_DOCUMENT_7, FLAG_DOCUMENT_8, FLAG_DOCUMENT_9, FLAG_DOCUMENT_10, FLAG_DOCUMENT_11,
                                   FLAG_DOCUMENT_12,
@@ -217,7 +218,7 @@ train_POS_Cash_bal_df %>%
 
 
 ```{r}
-left_join(train_df, Grp_bureau_df, by = "SK_ID_CURR") %>% 
+left_join(Grp_app_train_df, Grp_bureau_df, by = "SK_ID_CURR") %>% 
     left_join(Grp_Cred_crd_bal_df, by = "SK_ID_CURR") %>% 
     left_join(Grp_POS_Cash_bal_df, by = "SK_ID_CURR") 
 ```
@@ -225,6 +226,11 @@ left_join(train_df, Grp_bureau_df, by = "SK_ID_CURR") %>%
 
 
 
+```{r}
+left_join(train_df, Grp_bureau_df, by = "SK_ID_CURR") %>% 
+    left_join(Grp_Cred_crd_bal_df, by = "SK_ID_CURR") %>% 
+    left_join(Grp_POS_Cash_bal_df, by = "SK_ID_CURR") 
+```
 
 
 
