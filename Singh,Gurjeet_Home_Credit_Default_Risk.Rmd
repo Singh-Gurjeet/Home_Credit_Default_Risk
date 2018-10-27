@@ -27,10 +27,128 @@ library(lubridate)
 options(scipen = 999)
 ```
 
+
 ```{r}
-##-----------
-# Load data
-##----------------
+##-------------------
+# Import Data
+##-------------------
+
+#       #train_df <- read_csv("Data_application_train.csv")
+#       #save.image(file = "work_space_20181026.RData")
+# 
+# train_df <- read_csv("Data_application_train.csv")
+# train_bureau_df <- read_csv("Data_bureau.csv")
+# train_bureau_bal_df <- read_csv("Data_bureau_balance.csv")
+# train_Cred_Crd_bal_df <- read_csv("Data_credit_card_balance.csv")
+# train_inst_pmts_df <- read_csv("Data_installments_payments.csv")
+# train_POS_Cash_bal_df <- read_csv("Data_POS_CASH_balance.csv")
+# train_prev_appl_df <- read_csv("Data_previous_application.csv")
+# 
+# save.image(file = "work_space_20181026_PM_04_00.RData")
+
+
 ```
 
+```{r}
+save.image(file = "work_space_20181026_PM_09_40.RData")
+##load("work_space_20181026_PM_04_00.RData")
+```
+
+
+```{r}
+train_df
+```
+
+```{r}
+##------------------------------------------
+# Condense the Bureau data by grouping
+##------------------------------------------
+Grp_bureau_df <-  train_bureau_df %>% 
+                  filter(CREDIT_ACTIVE == 'Active'& !is.na(AMT_CREDIT_SUM)) %>% 
+                      mutate(IMP_AMT_CREDIT_SUM_DEBT = replace_na(AMT_CREDIT_SUM_DEBT,0)) %>% 
+                      mutate(IMP_AMT_CREDIT_SUM_LIMIT = AMT_CREDIT_SUM - IMP_AMT_CREDIT_SUM_DEBT) %>% 
+                      group_by(SK_ID_CURR) %>% 
+                      summarize(Total_AMT_CREDIT_SUM = sum(AMT_CREDIT_SUM),
+                                Total_IMP_AMT_CREDIT_SUM_DEBT = sum(IMP_AMT_CREDIT_SUM_DEBT),
+                                Total_IMP_AMT_CREDIT_SUM_LIMIT = sum(IMP_AMT_CREDIT_SUM_LIMIT))
+```
+
+
+
+```{r}
+train_bureau_bal_df
+```
+
+
+```{r}
+train_Cred_Crd_bal_df
+```
+
+
+```{r}
+train_inst_pmts_df
+```
+
+
+```{r}
+train_POS_Cash_bal_df
+#View(train_POS_Cash_bal_df)
+```
+
+
+```{r}
+summary(train_POS_Cash_bal_df)
+```
+
+```{r}
+str(train_POS_Cash_bal_df)
+
+
+train_POS_Cash_bal_df %>% 
+    filter(SK_DPD == 4231 | SK_DPD_DEF == 3595)
+
+train_POS_Cash_bal_df %>% 
+    filter(NAME_CONTRACT_STATUS == c("Signed","Approved","Returned to the store","Demand", "Canceled", "XNA", "Amortized debt"))
+
+train_POS_Cash_bal_df %>% 
+    filter(SK_DPD == 4231 | SK_DPD_DEF == 3595)
+
+train_POS_Cash_bal_df %>% 
+    distinct(NAME_CONTRACT_STATUS)
+
+train_POS_Cash_bal_df %>% 
+    filter(NAME_CONTRACT_STATUS == c("Active") & SK_ID_CURR == c(100003)) %>% 
+  arrange(SK_ID_CURR)
+```
+
+
+```{r}
+##------------------------------------------
+# Filter and Condense the POS Cash Balance by grouping
+##------------------------------------------
+
+Grp_POS_Cash_bal_df <- train_POS_Cash_bal_df %>% 
+                        filter(NAME_CONTRACT_STATUS == c("Active")) %>% 
+                        group_by(SK_ID_CURR) %>% 
+                        summarize(Total_SK_DPD = sum(SK_DPD),
+                                    Total_SK_DPD_DEF = sum(SK_DPD_DEF),
+                                    Total_prev_months = n())
+
+```
+
+
+
+```{r}
+train_prev_appl_df
+```
+
+
+```{r}
+summary(train_df)
+```
+
+```{r}
+Sys.Date()
+Sys.time()
+```
 
