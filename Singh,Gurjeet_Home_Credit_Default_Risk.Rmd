@@ -50,9 +50,8 @@ options(scipen = 999)
 ```
 
 ```{r}
-save.image(file = "work_space_20181027_AM_10_53.RData")
-
-load("work_space_20181026_PM_09_40.RData")
+##save.image(file = "work_space_20181027_AM_10_53.RData")
+##load("work_space_20181027_AM_10_53.RData")
 
 ```
 
@@ -88,6 +87,10 @@ Grp_app_train_df <- train_df %>%
 Grp_app_train_df
 ```
 
+```{r}
+train_bureau_df %>% 
+  arrange(SK_ID_CURR)
+```
 
 
 ```{r}
@@ -131,8 +134,8 @@ Grp_Cred_crd_bal_df <- train_Cred_Crd_bal_df %>%
                                                     Total_IMP_AMT_DRAWINGS_CURRENT = sum(IMP_AMT_DRAWINGS_CURRENT),
                                                     Total_IMP_AMT_DRAWINGS_OTHER_CURRENT = sum(IMP_AMT_DRAWINGS_OTHER_CURRENT),
                                                     Total_IMP_AMT_DRAWINGS_POS_CURRENT = sum(IMP_AMT_DRAWINGS_POS_CURRENT),
-                                                    Total_IMP_SK_DPD = sum(IMP_SK_DPD),
-                                                    Total_IMP_SK_DPD_DEF = sum(IMP_SK_DPD_DEF),
+                                                    Total_IMP_SK_DPD = mean(IMP_SK_DPD),
+                                                    Total_IMP_SK_DPD_DEF = mean(IMP_SK_DPD_DEF),
                                                     Total_prev_months = n())
 ```
 
@@ -158,8 +161,8 @@ train_inst_pmts_df %>%
 Grp_POS_Cash_bal_df <- train_POS_Cash_bal_df %>% 
                         filter(NAME_CONTRACT_STATUS == c("Active")) %>% 
                         group_by(SK_ID_CURR) %>% 
-                        summarize(Total_SK_DPD = sum(SK_DPD),
-                                    Total_SK_DPD_DEF = sum(SK_DPD_DEF),
+                        summarize(Total_SK_DPD = mean(SK_DPD),
+                                    Total_SK_DPD_DEF = mean(SK_DPD_DEF),
                                     Total_prev_months = n())
 
 ```
@@ -211,3 +214,45 @@ train_POS_Cash_bal_df %>%
     filter(NAME_CONTRACT_STATUS == c("Active") & SK_ID_CURR == c(100003)) %>% 
   arrange(SK_ID_CURR)
 ```
+
+
+```{r}
+left_join(train_df, Grp_bureau_df, by = "SK_ID_CURR") %>% 
+    left_join(Grp_Cred_crd_bal_df, by = "SK_ID_CURR") %>% 
+    left_join(Grp_POS_Cash_bal_df, by = "SK_ID_CURR") 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
